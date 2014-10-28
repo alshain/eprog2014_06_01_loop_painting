@@ -1,98 +1,130 @@
 note
-	description : "Drawing figures with asterisks."
+	description : "Loop_painting application root class"
+	date        : "$Date$"
+	revision    : "$Revision$"
 
 class
 	LOOP_PAINTING
 
+inherit
+	ARGUMENTS
+
 create
 	make
 
-feature -- Initialization
+feature {NONE} -- Initialization
+
+	dimension: INTEGER
 
 	make
-			-- Get size and paint.
-		local
-			n: INTEGER
+			-- Run application.
 		do
-			Io.put_string ("Enter a positive integer: ")
+			--Ask for integer between 0 and 40
+			Io.put_string ("Enter the dimension: ")
 			Io.read_integer
-			n := io.last_integer
-
-			if n <= 0 then
-				print ("Wrong input")
-			else
-				print ("%NCheckered triangle:%N%N")
-				print_checker_triangle (n)
-
-				print ("%N%N")
-
-				print ("Checkered diamond:%N%N")
-				print_checker_diamond (n)
-			end
-		end
-
-feature -- Painting
-
-	print_checker_triangle (n: INTEGER)
-			-- Print a checker triangle of size `n'.
-		require
-			positive_n: n > 0
-		local
-			i, j, space: INTEGER
-		do
 			from
-				i := 1
-				space := 0
+
 			until
-				i > n
+				Io.last_integer >= 0 and Io.last_integer < 40
 			loop
-				from
-				 	j := 1
-				until
-					j > i
-				loop
-					if j \\ 2 = space then
-						print (' ')
-					else
-					 	print ('*')
-					end
-					j := j + 1
+				if Io.last_integer < 0 then
+					Io.put_string ("Dimension must be positive, enter new dimension: ")
+				else
+					Io.put_string ("Dimension needs to be under 40 for right execution, enter new dimension: ")
 				end
-				space := 1 - space
-				i := i + 1
-				print ("%N")
+				Io.read_integer
+			end
+			dimension:= Io.last_integer
+			print_triangle
+			print_diamond
+		end
+
+
+	print_triangle
+		--prints checker triangle acording to dimension
+		local
+			zeile, spalte: INTEGER
+		do
+			Io.put_string ("%NChecker triangle:%N%N")
+			from
+				zeile:= 0
+			until
+				zeile = dimension
+			loop
+				zeile:= zeile + 1
+				from
+					spalte:= 0
+				until
+					spalte = zeile
+				loop
+					spalte:= spalte + 1
+					if zeile\\2 = 0 and spalte\\2 = 1 then
+						Io.put_string (" ")
+					elseif zeile\\2 = 0 and spalte\\2 = 0 then
+						Io.put_string ("*")
+					elseif zeile\\2 = 1 and spalte\\2 = 1 then
+						Io.put_string ("*")
+					else
+						Io.put_string (" ")
+					end
+				end
+				Io.put_string ("%N")
 			end
 		end
 
-	print_checker_diamond (n: INTEGER)
-			-- Print checker diamond of size `n'.
-		require
-			positive_n: n > 0
+	print_diamond
+	--prints checker diamond acording to dimension
 		local
-			i: INTEGER
-			left, middle: STRING
+			zeile, spalte: INTEGER
 		do
-			create left.make_filled (' ', n)
-			middle := ""
+			Io.put_string ("%N%NChecker diamond:%N%N")
 			from
-				i := 1
+				zeile:= 0
 			until
-				i > n
+				zeile = 2*dimension - 1
 			loop
-				left.remove_tail (1)
-				middle.append ("* ")
-				print (left + middle + "%N")
-				i := i + 1
-			end
-			from
-				i := 1
-			until
-				i > n
-			loop
-				left.append (" ")
-				middle.remove_tail (2)
-				print (left + middle + "%N")
-				i := i + 1
+				zeile:= zeile + 1
+				if (zeile <= dimension) then
+					from
+						spalte:= 0
+					until
+						spalte = dimension - zeile
+					loop
+						spalte:= spalte + 1
+						Io.put_string (" ")
+					end
+
+					from
+						spalte:= dimension - zeile
+					until
+						spalte = dimension
+					loop
+						spalte:= spalte + 1
+						Io.put_string ("* ")
+					end
+				else
+					from
+						spalte:= 0
+					until
+						spalte = zeile - dimension
+					loop
+						spalte:= spalte + 1
+						Io.put_string (" ")
+					end
+
+					from
+						spalte:= zeile - dimension
+					until
+						spalte = dimension
+					loop
+						spalte:= spalte + 1
+						Io.put_string ("* ")
+					end
+				end
+				Io.put_string ("%N")
 			end
 		end
+
+invariant
+input_bigger_0: dimension >= 0
 end
