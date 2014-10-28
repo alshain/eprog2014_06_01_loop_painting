@@ -38,29 +38,21 @@ feature -- Painting
 		require
 			positive_n: n > 0
 		local
-			i, j, space: INTEGER
+			s: STRING
+			add_space: BOOLEAN
 		do
-			from
-				i := 1
-				space := 0
-			until
-				i > n
+			s := "*%N"
+			add_space := True
+			across 1 |..| n as x
 			loop
-				from
-				 	j := 1
-				until
-					j > i
-				loop
-					if j \\ 2 = space then
-						print (' ')
-					else
-					 	print ('*')
-					end
-					j := j + 1
+				Io.put_string (s)
+				if add_space then
+					s := " " + s
+				else
+					s := "*" + s
 				end
-				space := 1 - space
-				i := i + 1
-				print ("%N")
+
+				add_space := not add_space
 			end
 		end
 
